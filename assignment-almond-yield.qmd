@@ -28,3 +28,13 @@ INSERT DIAGRAM
 
 
 ## Running the Model 
+
+### Load packages and data 
+```{r}
+library(tidyverse)
+library(here)
+
+# Climate data 
+data <- read.table("data/clim.txt", header = TRUE, sep = " ", stringsAsFactors = FALSE)
+```
+
