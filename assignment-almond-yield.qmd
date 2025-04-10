@@ -26,6 +26,28 @@ INSERT DIAGRAM
 
 ## Function Overview 
 
+```{r}
+# test workflow to translate to function 
+
+# Aggregate daily climate data to monthly averages
+df_monthly <- data |>
+  group_by(year, month) |>
+  summarise(tmax_c_avg = mean(tmax_c),
+            tmin_c_avg = mean(tmin_c),
+            precip_avg = mean(precip))
+
+# 1988 and 2010 are not a full years - exclude from data
+df_monthly <- df_monthly |>
+  filter(year != 1988 & year != 2010)
+  
+# calculate annual yield
+# I want a way for the code to look through the dataframe and pull out the correct tmin, tmax, and precip values for each year
+# The equation uses min and max temp for month 2, and precip for month 1
+
+
+
+```
+
 
 ## Running the Model 
 
