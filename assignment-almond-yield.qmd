@@ -1,6 +1,30 @@
 ---
-title: "assignment-almond-yield"
+title: "Almond Yield as a Function"
+subtitle: "EDS 230 - Assignment #2"
+date: "04/14/2025"
 format: html
-author: "Jordan and Marina" 
+author: "Jordan Sibley and Marina Kochuten" 
 ---
 
+## Overview 
+
+The purpose of this document is to practice building models and utilizing functions for environmental data. The goal is to implement a simple model of almond yield anomaly response to climate variables. The source of the function comes from the study, *Impacts of future climate change on California
+perennial crop yields: Model projections with
+climate and crop uncertainties* (Lobell et al. 2006). 
+
+## Model Set Up 
+
+### Inputs & Outputs 
+
+- **Inputs**: daily times series of minimum, maximum daily temperatures and precipitation
+- **Outputs**: maximum, minimum and mean yield anomoly for a input time series
+
+### Model diagram 
+
+INSERT DIAGRAM 
+
+
+## Function Overview 
+
+
+## Running the Model 
