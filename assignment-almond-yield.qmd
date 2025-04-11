@@ -26,6 +26,18 @@ INSERT DIAGRAM
 
 ## Function Overview 
 
+
+
+### Load packages and data 
+```{r}
+library(tidyverse)
+library(here)
+
+# Climate data 
+data <- read.table("data/clim.txt", header = TRUE, sep = " ", stringsAsFactors = FALSE)
+```
+
+## Try 1 
 ```{r}
 # test workflow to translate to function 
 
@@ -38,25 +50,91 @@ df_monthly <- data |>
 
 # 1988 and 2010 are not a full years - exclude from data
 df_monthly <- df_monthly |>
-  filter(year != 1988 & year != 2010)
+  filter( year != 1988 & year != 2010)
   
 # calculate annual yield
 # I want a way for the code to look through the dataframe and pull out the correct tmin, tmax, and precip values for each year
 # The equation uses min and max temp for month 2, and precip for month 1
 
 
+# Filter to Feb months for min and max temp 
+feb_temp <- df_monthly |> 
+  filter(month == 2) |> 
+  select(year, tmin_c_avg)
 
+# Filter to Jan months for precip
+jan_precip <- df_monthly |> 
+  filter(month == 1) |> 
+  select(year, precip_avg)
+
+# Join together 
+climate_input <- left_join(feb_temp, jan_precip, by = "year")
+
+
+
+# Function! 
+#y = -0.015min_temp - 0.0046min_temp^2 - 0.07P + 0.0043P^2+ 0.28
+
+almond_yield_df <- climate_input |> 
+  mutate(almond_yield = 
+           (-0.015 * tmin_c_avg) - (0.0046 * (tmin_c_avg ^ 2)) - (0.07 * precip_avg) + (0.0043 * (precip_avg ^2)) + 0.28
+         )
+
+# Numbers are much too small 
 ```
+
+
+## Try 2 
+
+- Instead of average min temp for the month, we take the min temp, and then sum the precipitation for the month 
+
+
+```{r}
+# Filter not complete years 
+data_clean <- data |> 
+  filter((year != 1988 & year != 2010))
+
+# Filter to Feb months for min and max temp 
+feb_temp <- data_clean |> 
+  group_by(year, month) |> 
+  summarise(min_temp = min(tmin_c)) |> 
+  ungroup() |> 
+  filter(month == 2) |> 
+  select(-month)
+
+# Filter to Jan months for precip
+jan_precip <- data_clean |> 
+  group_by(year, month) |> 
+  summarise(sum_precip = sum(precip)) |> 
+  ungroup() |> 
+  filter(month == 1) |> 
+  select(-month)
+
+# Join together 
+climate_input <- left_join(feb_temp, jan_precip, by = "year")
+
+# Function! 
+#y = -0.015min_temp - 0.0046min_temp^2 - 0.07P + 0.0043P^2+ 0.28
+
+almond_yield_df <- climate_input |> 
+  mutate(almond_yield = 
+           round((-0.015 * min_temp) - (0.0046 * (min_temp ^ 2)) - (0.07 * sum_precip) + (0.0043 * (sum_precip ^2)) + 0.28, 3)
+         )
+
+print(max(almond_yield_df$almond_yield))
+```
+
+
 
 
 ## Running the Model 
 
-### Load packages and data 
+#### Preparing dataset for function input 
 ```{r}
-library(tidyverse)
-library(here)
+# Filter not complete years  
+  data_clean <- data |> 
+    filter((year != 1988 & year != 2010))
 
-# Climate data 
-data <- read.table("data/clim.txt", header = TRUE, sep = " ", stringsAsFactors = FALSE)
+# Function 
 ```
 
