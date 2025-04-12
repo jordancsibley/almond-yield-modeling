@@ -4,20 +4,20 @@ subtitle: "EDS 230 - Assignment #2"
 date: "04/14/2025"
 format: html
 author: "Jordan Sibley and Marina Kochuten" 
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Overview 
 
-The purpose of this document is to practice building models and utilizing functions for environmental data. The goal is to implement a simple model of almond yield anomaly response to climate variables. The source of the function comes from the study, *Impacts of future climate change on California
-perennial crop yields: Model projections with
-climate and crop uncertainties* (Lobell et al. 2006). 
+The purpose of this document is to practice building models and utilizing functions for environmental data. The goal is to implement a simple model of almond yield anomaly response to climate variables. The source of the function comes from the study, *Impacts of future climate change on California perennial crop yields: Model projections with climate and crop uncertainties* (Lobell et al. 2006). 
 
 ## Model Set Up 
 
 ### Inputs & Outputs 
 
 - **Inputs**: daily times series of minimum, maximum daily temperatures and precipitation
-- **Outputs**: maximum, minimum and mean yield anomoly for a input time series
+- **Outputs**: maximum, minimum and mean yield anomaly for an input time series
 
 ### Model diagram 
 
@@ -30,111 +30,29 @@ INSERT DIAGRAM
 
 ### Load packages and data 
 ```{r}
+# Load libraries
 library(tidyverse)
 library(here)
 
-# Climate data 
+# Read in climate data
 data <- read.table("data/clim.txt", header = TRUE, sep = " ", stringsAsFactors = FALSE)
 ```
-
-## Try 1 
-```{r}
-# test workflow to translate to function 
-
-# Aggregate daily climate data to monthly averages
-df_monthly <- data |>
-  group_by(year, month) |>
-  summarise(tmax_c_avg = mean(tmax_c),
-            tmin_c_avg = mean(tmin_c),
-            precip_avg = mean(precip))
-
-# 1988 and 2010 are not a full years - exclude from data
-df_monthly <- df_monthly |>
-  filter( year != 1988 & year != 2010)
-  
-# calculate annual yield
-# I want a way for the code to look through the dataframe and pull out the correct tmin, tmax, and precip values for each year
-# The equation uses min and max temp for month 2, and precip for month 1
-
-
-# Filter to Feb months for min and max temp 
-feb_temp <- df_monthly |> 
-  filter(month == 2) |> 
-  select(year, tmin_c_avg)
-
-# Filter to Jan months for precip
-jan_precip <- df_monthly |> 
-  filter(month == 1) |> 
-  select(year, precip_avg)
-
-# Join together 
-climate_input <- left_join(feb_temp, jan_precip, by = "year")
-
-
-
-# Function! 
-#y = -0.015min_temp - 0.0046min_temp^2 - 0.07P + 0.0043P^2+ 0.28
-
-almond_yield_df <- climate_input |> 
-  mutate(almond_yield = 
-           (-0.015 * tmin_c_avg) - (0.0046 * (tmin_c_avg ^ 2)) - (0.07 * precip_avg) + (0.0043 * (precip_avg ^2)) + 0.28
-         )
-
-# Numbers are much too small 
-```
-
-
-## Try 2 
-
-- Instead of average min temp for the month, we take the min temp, and then sum the precipitation for the month 
-
-
-```{r}
-# Filter not complete years 
-data_clean <- data |> 
-  filter((year != 1988 & year != 2010))
-
-# Filter to Feb months for min and max temp 
-feb_temp <- data_clean |> 
-  group_by(year, month) |> 
-  summarise(min_temp = min(tmin_c)) |> 
-  ungroup() |> 
-  filter(month == 2) |> 
-  select(-month)
-
-# Filter to Jan months for precip
-jan_precip <- data_clean |> 
-  group_by(year, month) |> 
-  summarise(sum_precip = sum(precip)) |> 
-  ungroup() |> 
-  filter(month == 1) |> 
-  select(-month)
-
-# Join together 
-climate_input <- left_join(feb_temp, jan_precip, by = "year")
-
-# Function! 
-#y = -0.015min_temp - 0.0046min_temp^2 - 0.07P + 0.0043P^2+ 0.28
-
-almond_yield_df <- climate_input |> 
-  mutate(almond_yield = 
-           round((-0.015 * min_temp) - (0.0046 * (min_temp ^ 2)) - (0.07 * sum_precip) + (0.0043 * (sum_precip ^2)) + 0.28, 3)
-         )
-
-print(max(almond_yield_df$almond_yield))
-```
-
-
 
 
 ## Running the Model 
 
 #### Preparing dataset for function input 
 ```{r}
-# Filter not complete years  
-  data_clean <- data |> 
-    filter((year != 1988 & year != 2010))
-
-# Function 
+# Filter not complete years - no Jan or Feb data for 1988
+data_clean <- data |> 
+  filter(year != 1988)
 ```
+
+#### Apply function to test climate data
+```{r}
+# Calculate almost yield anomalies
+calculate_almond_yield(data_clean)
+```
+
+
 
