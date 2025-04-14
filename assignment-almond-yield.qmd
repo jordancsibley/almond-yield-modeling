@@ -8,27 +8,25 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Overview 
+## Overview
 
-The purpose of this document is to practice building models and utilizing functions for environmental data. The goal is to implement a simple model of almond yield anomaly response to climate variables. The source of the function comes from the study, *Impacts of future climate change on California perennial crop yields: Model projections with climate and crop uncertainties* (Lobell et al. 2006). 
+The purpose of this document is to practice building models and utilizing functions for environmental data. The goal is to implement a simple model of almond yield anomaly response to climate variables. The source of the function comes from the study, *Impacts of future climate change on California perennial crop yields: Model projections with climate and crop uncertainties* (Lobell et al. 2006).
 
-## Model Set Up 
+## Model Set Up
 
-### Inputs & Outputs 
+### Inputs & Outputs
 
-- **Inputs**: daily times series of minimum, maximum daily temperatures and precipitation
-- **Outputs**: maximum, minimum and mean yield anomaly for an input time series
+-   **Inputs**: daily times series of minimum, maximum daily temperatures and precipitation
+-   **Outputs**: maximum, minimum and mean yield anomaly for an input time series
 
-### Model diagram 
+### Model diagram
 
-INSERT DIAGRAM 
+![*Conceptual diagram of almond yield anomaly in response to climate variables*](images/almond-yield-diagram.png)
 
+## Running the Model
 
-## Function Overview 
+### Load packages and data
 
-
-
-### Load packages and data 
 ```{r}
 # Load libraries
 library(tidyverse)
@@ -38,21 +36,20 @@ library(here)
 data <- read.table("data/clim.txt", header = TRUE, sep = " ", stringsAsFactors = FALSE)
 ```
 
+### Preparing data set for function input
 
-## Running the Model 
-
-#### Preparing dataset for function input 
 ```{r}
 # Filter not complete years - no Jan or Feb data for 1988
 data_clean <- data |> 
   filter(year != 1988)
 ```
 
-#### Apply function to test climate data
+### Apply function to test climate data
+
 ```{r}
-# Calculate almost yield anomalies
+# Source function
+source(here("R", "almond-yield.R"))
+
+# Calculate almond yield anomalies
 calculate_almond_yield(data_clean)
 ```
-
-
-
