@@ -1,0 +1,89 @@
+---
+title: "Almond Yield Profit Model"
+subtitle: "EDS 230 - Assignment #3"
+date: "04/21/2025"
+format: html
+author: "Jordan Sibley and Marina Kochuten" 
+editor_options: 
+  chunk_output_type: console
+---
+
+## Overview
+
+1.  Develop a profit model for your almond yield
+
+-   Use your imagination to think about what would make sense
+-   Make sure you include parameters
+-   You could assume a baseline profit and then adjust according to the anomaly
+
+2.  Apply the profit model to your almond yield model
+
+-   There are many ways to combine the almond yield and profit functions; you can have the profit function "call"/use the almond yield function; or create a wrapper function that calls them in sequence (first the almond yield and then the profit function)
+
+3.  Perform a simple informal sensitivity analysis of almond yield profit using at least 2 parameters
+
+4.  Create 2 graphs
+
+-   one that shows yield anomaly for each year, accounting for uncertainty in the parameters
+-   one that show how yield anomaly in general varies with your parameters
+
+5.  Write a short paragraph to summarize you interpretation of your model results (e.g what do 'take away' from your model and sensitivity analysis)
+
+
+
+## Model Scratch work (clean up later)
+
+Potential inputs to model: 
+- Results of almond yield anomaly model (how many almonds will grow)
+- Cost of production (labor, supplies)
+
+Output: 
+- Profit margin 
+
+
+Profit = (Base yield + anomaly) X almond price - cost of production 
+
+
+Example values 
+
+base yield:  180 tons/acre 
+almond price: $2,000 per ton 
+cost of production: $1000 per ton 
+
+
+```{r}
+# Potential function for profit (not including yield model)
+
+calc_almond_profit <- function(yield_anomaly, 
+                               base_yield = 180, 
+                               almond_price = 2000, 
+                               cost_per_acre = 1000) { 
+  total_yield <- base_yield + yield_anomaly
+  profit <- total_yield * almond_price - cost_per_acre
+  return(round(profit, 2))
+  }
+```
+
+
+```{r}
+# Wrapper function that uses both models 
+
+estimate_profit_from_climate <- function(climate_data_clean, 
+                                         base_yield = 180, 
+                                         almond_price = 2000, 
+                                         cost_per_acre = 1000) {
+  # Get yield anomalies from climate data
+  yield_results <- calculate_almond_yield(climate_data_clean )
+  
+  # Input yield results into profit model 
+  profit_results <- sapply(yield_results, calculate_almond_profit,
+                           base_yield = base_yield,
+                           almond_price = almond_price,
+                           cost_per_acre = cost_per_acre)
+  # Attach names to values (max_yield min_yield mean_yield)
+  names(profit_results) <- names(yield_results)
+  return(profit_results)
+}
+```
+
+Have not tried this with the clim.txt data yet, this is just an outline for something that i think can work 
