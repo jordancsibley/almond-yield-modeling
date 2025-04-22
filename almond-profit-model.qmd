@@ -54,6 +54,22 @@ almond_profits <- calculate_yield_and_profit(data_clean)
 
 ## Informal Sensitivity Analysis
 
+```{r}
+# Set seed
+set.seed(222)
+
+# Simulate uncertainty in both almond price and production cost
+sensitivity_values <- tibble(
+  almond_price <- rnorm(mean = 2000, sd = 200, n = 20),
+  cost_per_acre <- rnorm(mean = 1000, sd = 50, n = 20))
+
+
+# Run uncertaintly through model
+uncertainty_results <- pmap(sensitivity_values ~ calculate_yield_and_profit(climate_df_clean = data_clean,
+                                                          almond_price = almond_price,
+                                                          cost_per_acre = cost_per_acre))
+```
+
 
 
 
