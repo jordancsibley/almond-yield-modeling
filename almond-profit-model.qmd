@@ -8,10 +8,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Overview
-
-
-
 ## Setup
 
 ```{r}
@@ -96,6 +92,11 @@ ggplot(mean_profit,
 
 ## Summary and Interpretation of Results
 
+Our profit model uses climate data to calculate annual almond yield and combines it with input values for the market price of almonds and the production cost per acre to output a data frame with annual yield and profit. Based on online research, we selected a market price of $2000 per ton and estimated production costs to be roughly half that amount. However, these values are flexible and easily modified (we are not agricultural business experts). We confirmed that the model behaves as expected (low yields result in low profits, and high yields produce higher profits).
+
+To explore how uncertainty in the model’s input parameters affects profit estimates, we conducted a sensitivity analysis using the `pmap` function from the `purrr` package. This allowed us to vary almond price and production cost simultaneously and run the model multiple times. The first visualization we produced is a boxplot of annual profits across simulations, which highlights how sensitive profit is to changing conditions. Most years show low and consistent profits, while 1995 stands out as a strong outlier with exceptionally high profit due to unusually high almond yield that year. We also created a second plot showing the overall distribution of profit across all years and simulations. In this plot, boxplots that are tightly clustered near zero but have long tails or numerous outliers above suggest that while most conditions result in modest profits, a few combinations of high yield and favorable prices can generate much larger returns. This would indicate that our model is very sensitive to the parameter values.
+
+This sensitivity analysis highlights the importance of accounting for uncertainty in environmental models. By testing a range of plausible input values, we gain a better understanding of potential outcomes.
 
 
 
