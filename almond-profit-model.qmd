@@ -12,16 +12,6 @@ editor_options:
 
 
 
-
-3.  Perform a simple informal sensitivity analysis of almond yield profit using at least 2 parameters
-
-4.  Create 2 graphs
-
--   one that shows yield anomaly for each year, accounting for uncertainty in the parameters
--   one that show how yield anomaly in general varies with your parameters
-
-5.  Write a short paragraph to summarize you interpretation of your model results (e.g what do 'take away' from your model and sensitivity analysis)
-
 ## Setup
 
 ```{r}
@@ -55,21 +45,56 @@ almond_profits <- calculate_yield_and_profit(data_clean)
 ## Informal Sensitivity Analysis
 
 ```{r}
-# Set seed
-set.seed(222)
+# Generate sample data
+almond_price = rnorm(mean = 2000, sd = 200, n = 200)
+cost_per_acre = rnorm(mean = 1000, sd = 50, n = 200)
 
-# Simulate uncertainty in both almond price and production cost
-sensitivity_values <- tibble(
-  almond_price <- rnorm(mean = 2000, sd = 200, n = 20),
-  cost_per_acre <- rnorm(mean = 1000, sd = 50, n = 20))
+# Bind together
+parms <- cbind.data.frame(almond_price, cost_per_acre)
+
+# Pmap for sensitivity analysis
+results <- parms %>% pmap(calculate_yield_and_profit, data_clean
+)
+
+# Check
+results[[1]]
+length(results)
+
+# Extract results
+mean_profit <- map_df(results, `[`, c("profit", "year", "almond_yield"))
+
+# Add parameter values
+mean_profit <- cbind.data.frame(mean_profit, parms)
+
+# Force ggplot to not display numbers in scientific notation
+options(scipen = 999)
 
 
-# Run uncertaintly through model
-uncertainty_results <- pmap(sensitivity_values ~ calculate_yield_and_profit(climate_df_clean = data_clean,
-                                                          almond_price = almond_price,
-                                                          cost_per_acre = cost_per_acre))
+# Plot annual profit uncertainty
+ggplot(mean_profit, 
+       aes(as.factor(year), profit, group = year)) +
+  geom_boxplot() +
+  labs(x = "Year",
+       y = "Mean Annual Profit (USD)",
+       title = "Annual Almond Profit Uncertainty") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  theme_minimal()
+
+# Plot overall profit uncertainty
+ggplot(mean_profit, 
+       aes(y = profit)) +
+  geom_boxplot() +
+  labs(y = "Mean Annual Profit (USD)",
+       title = "Overall Almond Profit Uncertainty") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank()
+  )
 ```
 
+
+## Summary and Interpretation of Results
 
 
 
