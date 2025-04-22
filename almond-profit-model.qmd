@@ -10,15 +10,8 @@ editor_options:
 
 ## Overview
 
-1.  Develop a profit model for your almond yield
 
--   Use your imagination to think about what would make sense
--   Make sure you include parameters
--   You could assume a baseline profit and then adjust according to the anomaly
 
-2.  Apply the profit model to your almond yield model
-
--   There are many ways to combine the almond yield and profit functions; you can have the profit function "call"/use the almond yield function; or create a wrapper function that calls them in sequence (first the almond yield and then the profit function)
 
 3.  Perform a simple informal sensitivity analysis of almond yield profit using at least 2 parameters
 
@@ -29,105 +22,37 @@ editor_options:
 
 5.  Write a short paragraph to summarize you interpretation of your model results (e.g what do 'take away' from your model and sensitivity analysis)
 
-
-
-## Model Scratch work (clean up later)
-
-Potential inputs to model: 
-- Results of almond yield anomaly model (how many almonds will grow)
-- Cost of production (labor, supplies)
-
-Output: 
-- Profit margin 
-
-
-Profit = (Base yield + anomaly) X almond price - cost of production 
-
-
-Example values 
-
-base yield:  180 tons/acre 
-almond price: $2,000 per ton 
-cost of production: $1000 per ton 
-
+## Setup
 
 ```{r}
-# Potential function for profit (not including yield model)
-
-calculate_almond_profit <- function(yield_anomaly, 
-                               base_yield = 180, 
-                               almond_price = 2000, 
-                               cost_per_acre = 1000) { 
-  total_yield <- base_yield + yield_anomaly
-  profit <- total_yield * almond_price - cost_per_acre
-  return(round(profit, 2))
-  }
-```
-
-
-```{r}
-# Wrapper function that uses both models 
-
-estimate_profit_from_climate <- function(climate_data_clean, 
-                                         base_yield = 180, 
-                                         almond_price = 2000, 
-                                         cost_per_acre = 1000) {
-  # Get yield anomalies from climate data
-  yield_results <- calculate_almond_yield(climate_data_clean )
-  
-  # Input yield results into profit model 
-  profit_results <- sapply(yield_results, calculate_almond_profit,
-                           base_yield = base_yield,
-                           almond_price = almond_price,
-                           cost_per_acre = cost_per_acre)
-  # Attach names to values (max_yield min_yield mean_yield)
-  names(profit_results) <- names(yield_results)
-  return(profit_results)
-}
-```
-
-Have not tried this with the clim.txt data yet, this is just an outline for something that i think can work 
-
-```{r}
-# test with clim.txt
-
 # Load libraries
 library(tidyverse)
 library(here)
+library(purrr)
+```
 
+## Data Prep
+
+```{r}
 # Read in climate data
 data <- read.table("data/clim.txt", header = TRUE, sep = " ", stringsAsFactors = FALSE)
 
 # Filter not complete years - no Jan or Feb data for 1988
 data_clean <- data |> 
   filter(year != 1988)
-
-# Source function
-source(here("R", "almond-yield.R"))
-
-# use func
-test <- estimate_profit_from_climate(data_clean)
 ```
 
-Output is the profit for the 3 yield anomalies output from almond yield function (min, max, and mean), but it seems like we might need annual yield.
+## Running the Model
 
-From Ojas's email:
+```{r}
+# Source function
+source(here("R", "almond-yield-profit.R"))
 
-Just an update on the graphs, the intention was indeed to show almond profits and not yields. So it's up to you which one you would like to output. e.g. you can do it in the way we talked about in section:
+# Calculate annual almond profits
+almond_profits <- calculate_yield_and_profit(data_clean)
+```
 
-- One graph with almond yields through time with parameter uncertainty in yields
-- One graph with almond profits parameter uncertainty in profits (this is could be a combo of uncertainty in yield and profit parameters, or any one of the two, as long as it's at least two parameters). This could be overall for all years combined, or again through time.
-
-You could also do it in another way:
-
-- One graph with almond yields in any one year or for all years together, with uncertainty
-- One graph with profits over time with uncertainty
-
-Finally, you could also have both graphs with profits, overall uncertainty and through time. But it might be informative to see the yield results separately.
-
-Feel free to pick and be creative if you feel like it, i'll accept all combinations, just please explain what you've done etc. as mentioned in the assignment.
-
-
+## Informal Sensitivity Analysis
 
 
 

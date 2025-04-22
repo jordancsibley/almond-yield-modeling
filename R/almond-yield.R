@@ -54,11 +54,16 @@ calculate_almond_yield <- function(climate_data, coef_temp = -0.015, coef_temp2 
                                 3)
     )
   
+  
+  # Return annual yield df
+  return(almond_yield_df |>
+           select(c(year, almond_yield)))
+  
   # Return yield anomalies
-  return(c(
-    max_yield = max(almond_yield_df$almond_yield),
-    min_yield = min(almond_yield_df$almond_yield),
-    mean_yield = mean(almond_yield_df$almond_yield)
-  ))
+  # return(c(
+  #   max_yield = max(almond_yield_df$almond_yield),
+  #   min_yield = min(almond_yield_df$almond_yield),
+  #   mean_yield = mean(almond_yield_df$almond_yield)
+  # ))
   
 }
