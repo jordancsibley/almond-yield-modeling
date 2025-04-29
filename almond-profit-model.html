@@ -121,8 +121,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ✔ forcats   1.0.0     ✔ stringr   1.5.1
 ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.0.2     
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
@@ -130,7 +130,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>here() starts at /Users/jordansibley/Desktop/MEDS/EDS_230/almond-yield-modeling</code></pre>
+<pre><code>here() starts at /Users/marinakochuten/MEDS/spring/eds230-modeling/almond-yield-modeling</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -176,16 +176,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 22 × 3
     year almond_yield   profit
    &lt;int&gt;        &lt;dbl&gt;    &lt;dbl&gt;
- 1  1989       -0.355   -1597.
- 2  1990        9.29    16015.
- 3  1991       68.9    124879.
- 4  1992       15.4     27221.
- 5  1993       20.2     35949.
- 6  1994        2.48     3583.
- 7  1995     1920.    3504735.
- 8  1996        3.58     5591.
- 9  1997      330.     601038.
-10  1998       27.9     49928.
+ 1  1989       -0.355   -1691.
+ 2  1990        9.29    16633.
+ 3  1991       68.9    129889.
+ 4  1992       15.4     28290.
+ 5  1993       20.2     37370.
+ 6  1994        2.48     3698.
+ 7  1995     1920.    3646120.
+ 8  1996        3.58     5788.
+ 9  1997      330.     625260.
+10  1998       27.9     51913.
 # ℹ 12 more rows</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
